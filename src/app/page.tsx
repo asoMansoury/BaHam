@@ -1,18 +1,47 @@
 import { Button, Link } from "@heroui/react";
-import Image from "next/image";
-import { FaRegSmile } from "react-icons/fa";
-
-export default function Home() {
+import { signOut, auth } from '../auth';
+import { FaRegSmile, FaRegSmileBeam } from "react-icons/fa";
+import authConfig from "../auth.config";
+import { getServerSession } from "next-auth";
+export default async function Home() {
+  // const session = await auth();
+  const session = await getServerSession(authConfig);
   return (
-    <div className="text-3xl">
-      <h1>Hello app</h1>
-      <Button 
-        as={Link}
-        href="/members"
-        color="primary"
-        variant="bordered"
-        startContent={<FaRegSmile size={20}></FaRegSmile>}
-      ></Button>
+    <div>
+      <h1 className="text-3xl">Hello app!</h1>
+
+      <h3 className="text-2xl font-semibold">
+        User Session data :
+      </h3>
+      {
+        session?(
+          <div>
+            <pre>
+              {JSON.stringify(session,null,2)}
+            </pre>
+            <form
+              action={async () =>{
+                "use server";
+                await signOut();
+              }}
+            >
+              <Button
+                type="submit"
+                color="primary"
+                variant="bordered"
+                startContent={
+                  <FaRegSmileBeam size={20}></FaRegSmileBeam>
+                }
+              >
+                Sign out
+              </Button>
+              </form>
+          </div>
+
+        ):(
+          <div>Not signed in</div>
+        )
+      }
     </div>
   );
 }

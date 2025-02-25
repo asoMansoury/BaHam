@@ -16,6 +16,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { GiPadlock } from "react-icons/gi";
 import { registerUser } from "@/app/actions/authActions";
+import { toast } from "react-toastify";
 export default function RegisterForm() {
   const {
     register,
@@ -28,9 +29,9 @@ export default function RegisterForm() {
   });
   const onSubmit =async (data: RegisterSchema) => {
     const result = await registerUser(data);
-
+    console.log({result});
     if(result.status === "success") {
-        console.log("User registration successful");
+        toast.success("User registration successful");
     }else {
         if(Array.isArray(result.error)){
             result.error.forEach((e:any)=>{
