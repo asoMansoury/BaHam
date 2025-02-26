@@ -1,6 +1,6 @@
-import { Button, Link } from "@heroui/react";
-import { signOut, auth } from '../auth';
-import { FaRegSmile, FaRegSmileBeam } from "react-icons/fa";
+import { Button } from "@heroui/react";
+import { signOut  } from '../auth';
+import {  FaRegSmileBeam } from "react-icons/fa";
 import authConfig from "../auth.config";
 import { getServerSession } from "next-auth";
 export default async function Home() {

@@ -4,10 +4,10 @@ import { prisma } from '../../lib/prisma';
 import { registerSchema, RegisterSchema } from '../../lib/schemas/RegisterSchema';
 import { ActionResult } from '../../types';
 import bcrypt from "bcryptjs";
-import { User } from '@prisma/client';
+
 import { LoginSchema } from '../../lib/schemas/LoginSchemas';
 import { signIn } from '@/auth';
-// import { signIn } from 'next-auth/react';
+import { User } from '@prisma/client';
 
 
 

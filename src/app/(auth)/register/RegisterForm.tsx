@@ -35,7 +35,7 @@ export default function RegisterForm() {
     }else {
         if(Array.isArray(result.error)){
             result.error.forEach((e:any)=>{
-                console.log("e::: ",e);
+                // console.log("e::: ",e);
                 const fieldName = e.path.join(".") as 
                 | "email" 
                 | "name" 
