@@ -1,11 +1,11 @@
 import { Button } from "@heroui/react";
-import { signOut  } from '../auth';
+import { auth, signOut  } from '../auth';
 import {  FaRegSmileBeam } from "react-icons/fa";
 import authConfig from "../auth.config";
-import { getServerSession } from "next-auth";
+
 export default async function Home() {
   // const session = await auth();
-  const session = await getServerSession(authConfig);
+  const session = await auth();
   return (
     <div>
       <h1 className="text-3xl">Hello app!</h1>
