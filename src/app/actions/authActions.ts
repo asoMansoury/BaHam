@@ -6,7 +6,7 @@ import { ActionResult } from '../../types';
 import bcrypt from "bcryptjs";
 
 import { LoginSchema } from '../../lib/schemas/LoginSchemas';
-import { signIn } from '@/auth';
+import { signIn ,signOut} from '@/auth';
 import { User } from '@prisma/client';
 
 
@@ -58,6 +58,12 @@ export async function registerUser(data: RegisterSchema): Promise<ActionResult<U
         return { status: 'error', error: "Something went wrong" };
     }
 }
+
+export async function signOutUser() {
+    await signOut({ redirectTo: '/' });
+}
+
+
 
 export async function getUserByEmail(email: string) {
     return prisma.user.findUnique({ where: { email: email } });
