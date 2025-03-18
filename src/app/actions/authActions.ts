@@ -43,7 +43,7 @@ export async function registerUser(data: RegisterSchema): Promise<ActionResult<U
         const hashPassword = await bcrypt.hash(password, 10);
 
         const existingUser = await prisma.user.findUnique({
-            where: { email }
+            where: { email,is_active:true }
         });
 
         if (existingUser) return { status: 'error', error: "User already exists" };
@@ -66,5 +66,5 @@ export async function signOutUser() {
 
 
 export async function getUserByEmail(email: string) {
-    return prisma.user.findUnique({ where: { email: email } });
+    return prisma.user.findUnique({ where: { email: email,is_active:true } });
 }
