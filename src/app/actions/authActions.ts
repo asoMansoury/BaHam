@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 import { LoginSchema } from '../../lib/schemas/LoginSchemas';
 import { signIn ,signOut} from '@/auth';
 import { User } from '@prisma/client';
-
+import jwt from 'jsonwebtoken';
 
 
 export async function signInUser(data: LoginSchema): Promise<ActionResult<string>> {
@@ -23,7 +23,8 @@ export async function signInUser(data: LoginSchema): Promise<ActionResult<string
             return { status: 'error', error: result.error };
         }
 
-        return { status: 'success', data: 'Logged in successfully' };
+        const token = jwt.sign({ email: data.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        return { status: 'success', data: token};
     } catch (error) {
         console.error(error);
         return { status: 'error', error: 'Invalid credentials' };
