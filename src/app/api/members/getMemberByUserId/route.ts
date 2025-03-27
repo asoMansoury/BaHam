@@ -1,21 +1,12 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/auth';
 import { getMemberByUserId } from '@/app/actions/membersActions';
+import jwt from 'jsonwebtoken';
+import { apiAuth } from '@/app/middleware/apiAuth';
 
-export async function GET(request: Request, { params }: { params: { username: string } }) {
+export async function GET(request: Request, { params }: { params: { userId: string } }) {
+    const authResponse = apiAuth(request); // Use the new middleware for token validation
+    if (authResponse) return authResponse; // Return the response if token is invalid
 
-    const session = await auth();
-    
-    if (!session.user) {
-        return NextResponse.json({ error: 'User not signed in' }, { status: 401 });
-    }
-
-    const member = await getMemberByUserId(params.username);
-
-    
-    if (!member) {
-        return NextResponse.json({ error: 'Member not found' }, { status: 404 });
-    }
-
+    const member = await getMemberByUserId(params.userId);
     return NextResponse.json(member);
 }

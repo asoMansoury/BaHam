@@ -1,17 +1,21 @@
 import { NextResponse } from 'next/server';
 import { auth } from './auth';
 import { authRoutes, publicRoutes } from './routes';
+import jwt from 'jsonwebtoken';
 
 export default auth((req) => {
     const { nextUrl } = req;
     const isLoggedIn = !!req.auth;
 
-    const isPublic = publicRoutes.includes(nextUrl.pathname);
+    const isPublic = publicRoutes.includes(nextUrl.pathname);    
+
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
     if (isPublic) {
         return NextResponse.next();
     }
+
+
 
     if (isAuthRoute) {
         if (isLoggedIn) {
