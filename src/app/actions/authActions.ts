@@ -9,9 +9,11 @@ import { LoginSchema } from '../../lib/schemas/LoginSchemas';
 import { signIn ,signOut} from '@/auth';
 import { User } from '@prisma/client';
 import jwt from 'jsonwebtoken';
+import { BaseResponseDto } from '../types/BaseResponseDto';
+import { LoginResponseDto, RegisterResponseDto } from '../types/(auth)/LoginsResponseDto';
 
 
-export async function signInUser(data: LoginSchema): Promise<ActionResult<string>> {
+export async function signInUser(data: LoginSchema): Promise<ActionResult<BaseResponseDto<LoginResponseDto>>> {
     try {
         const result = await signIn('credentials', {
             email: data.email,
@@ -24,16 +26,26 @@ export async function signInUser(data: LoginSchema): Promise<ActionResult<string
         }
 
         const token = jwt.sign({ email: data.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        return { status: 'success', data: token};
+
+        var bodyResponse = {
+            isSuccess:true,
+            message: 'Succeeded',
+            body:{
+                token:token
+            }
+        } as BaseResponseDto<LoginResponseDto>;
+
+        return {status:'success', data:bodyResponse};
     } catch (error) {
         console.error(error);
         return { status: 'error', error: 'Invalid credentials' };
     }
 }
 
-export async function registerUser(data: RegisterSchema): Promise<ActionResult<User>> {
+export async function registerUser(data: RegisterSchema): Promise<ActionResult<BaseResponseDto<RegisterResponseDto>>> {
     try {
         const validated = registerSchema.safeParse(data);
+
 
         if (!validated.success) {
             return { status: "error", error: validated.error.errors }
@@ -53,7 +65,17 @@ export async function registerUser(data: RegisterSchema): Promise<ActionResult<U
             data: { name, email, passwordHash: hashPassword },
         });
 
-        return { status: 'success', data: user }
+        var bodyResponse = {
+            isSuccess:true,
+            message: 'Succeeded',
+            body:{
+                email:user.email,
+                name:user.name,
+                id:user.id
+            }
+        } as BaseResponseDto<RegisterResponseDto>;
+
+        return { status: 'success', data: bodyResponse }
     } catch (error) {
         console.log(error);
         return { status: 'error', error: "Something went wrong" };

@@ -5,7 +5,6 @@ import { loginSchema } from '../../../../lib/schemas/LoginSchemas';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-
     const validated = loginSchema.safeParse(body);
 
     if (!validated.success) {
@@ -25,7 +24,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { message: result.data },
+      result.data,
       { status: 200 }
     );
   } catch (error) {

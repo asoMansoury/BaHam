@@ -16,5 +16,5 @@ export function apiAuth(req) {
         return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
     }
 
-    return NextResponse.next();
+    // Removed NextResponse.next() to comply with app routing conventions
 }
