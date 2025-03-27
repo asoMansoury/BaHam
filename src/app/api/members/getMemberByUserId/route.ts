@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { getMemberByUserId } from '@/app/actions/membersActions';
-import jwt from 'jsonwebtoken';
 import { apiAuth } from '@/app/middleware/apiAuth';
 
 export async function GET(request: Request, { params }: { params: { userId: string } }) {
