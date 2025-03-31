@@ -12,13 +12,14 @@ import { useState } from "react";
 import { Member } from "@prisma/client";
 import Link from "next/link";
 import React from "react";
+import { MembersDto } from "../types/(auth)/LoginsResponseDto";
  
 
 
  
 
 type Props = {
-  member: Member;
+  member: MembersDto;
 };
  
 

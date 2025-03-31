@@ -6,7 +6,7 @@ type MemberDetailedPage = {
     params:{userId}
 }
 export default async function MemberDetailedPage({params}:MemberDetailedPage) {
-  const member = await getMemberByUserId(params.userId);
+  const member = (await getMemberByUserId(params.userId) as any).data;
 
   if(!member) return notFound();
 

@@ -11,7 +11,7 @@ export default async function Layout({
     children,
     params
 }:LayoutProps){
-    const member = await getMemberByUserId(params.userId);
+    const member = (await getMemberByUserId(params.userId) as any).data;
 
     return (
         <div className="grid grid-cols-12 gap-5 h-[80vh]">
