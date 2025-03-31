@@ -13,7 +13,7 @@ import { BaseResponseDto } from '../types/BaseResponseDto';
 import { LoginResponseDto, RegisterResponseDto } from '../types/(auth)/LoginsResponseDto';
 
 
-export async function signInUser(data: LoginSchema): Promise<ActionResult<BaseResponseDto<LoginResponseDto>>> {
+export async function signInUser(data: LoginSchema): Promise<ActionResult<LoginResponseDto>> {
     try {
         const result = await signIn('credentials', {
             email: data.email,
@@ -28,21 +28,17 @@ export async function signInUser(data: LoginSchema): Promise<ActionResult<BaseRe
         const token = jwt.sign({ email: data.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         var bodyResponse = {
-            isSuccess:true,
-            message: 'Succeeded',
-            body:{
-                token:token
-            }
-        } as BaseResponseDto<LoginResponseDto>;
+            token:token
+        } as LoginResponseDto;
 
-        return {status:'success', data:bodyResponse};
+        return { status: 'success', data: bodyResponse }
     } catch (error) {
         console.error(error);
         return { status: 'error', error: 'Invalid credentials' };
     }
 }
 
-export async function registerUser(data: RegisterSchema): Promise<ActionResult<BaseResponseDto<RegisterResponseDto>>> {
+export async function registerUser(data: RegisterSchema): Promise<ActionResult<RegisterResponseDto>> {
     try {
         const validated = registerSchema.safeParse(data);
 
@@ -66,14 +62,10 @@ export async function registerUser(data: RegisterSchema): Promise<ActionResult<B
         });
 
         var bodyResponse = {
-            isSuccess:true,
-            message: 'Succeeded',
-            body:{
-                email:user.email,
-                name:user.name,
-                id:user.id
-            }
-        } as BaseResponseDto<RegisterResponseDto>;
+            email:user.email,
+            name:user.name,
+            id:user.id
+        } as RegisterResponseDto;
 
         return { status: 'success', data: bodyResponse }
     } catch (error) {

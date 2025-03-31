@@ -6,10 +6,11 @@ import UserNotSignedInException from '../utils/exceptions/UserNotSignedInExcepti
 import { Photo } from '@prisma/client';
 import { ActionResult } from '@/types';
 import { BaseResponseDto } from '../types/BaseResponseDto';
-import { MembersDto } from '../types/(auth)/LoginsResponseDto';
+import { GetMembersDto, MembersDto } from '../types/(auth)/LoginsResponseDto';
+import { mapArray, mapArrayType, mapProperties } from '../types/Mapper';
 
 //this function populate all activated members 
-export async function getMembers(): Promise<ActionResult<BaseResponseDto<MembersDto[]>>>{
+export async function getMembers(): Promise<ActionResult<GetMembersDto>>{
     const session = await auth();
     if(!session.user) throw new UserNotSignedInException();
 
@@ -21,34 +22,44 @@ export async function getMembers(): Promise<ActionResult<BaseResponseDto<Members
             is_active:true
         }
     });
+    var mapped = members.map((item)=>{
+        var result:MembersDto = {
+            id:item.id,
+            userId:item.userId,
+            name:item.name,
+            description:item.description,
+            gender:item.gender,
+            city:item.city,
+            country:item.country,
+            dateOfBirth:item.dateOfBirth,
+            image:item.image,
+            isSucceed:true,
+            message:"operation completed"
+        };
+        return result
+    })
 
     var bodyResponse = {
-        isSuccess:true,
-        message: 'Succeeded',
-        body:members as any
-    } as BaseResponseDto<MembersDto[]>;
+        members:mapped
+    } as GetMembersDto;
     
     return { status: 'success', data: bodyResponse }
 }
 
-export async function getMemberByUserId(userId:string): Promise<ActionResult<BaseResponseDto<MembersDto>>>{
+export async function getMemberByUserId(userId:string): Promise<ActionResult<MembersDto>>{
     var member =await prisma.member.findUnique({where:{userId, is_active:true}});
 
     const result = {
-        isSuccess: true,
-        message: 'Succeeded',
-        body:{
-            id:member.id,
-            name:member.name,
-            description:member.description,
-            gender:member.gender,
-            image:member.image,
-            city:member.city,
-            country:member.country,
-            dateOfBirth:member.dateOfBirth,
-            userId:member.userId
-        }
-    } as BaseResponseDto<MembersDto>
+        id:member.id,
+        name:member.name,
+        description:member.description,
+        gender:member.gender,
+        image:member.image,
+        city:member.city,
+        country:member.country,
+        dateOfBirth:member.dateOfBirth,
+        userId:member.userId
+    } as MembersDto
     return { status: 'success', data: result }
 }
 

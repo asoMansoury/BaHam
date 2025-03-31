@@ -1,7 +1,12 @@
-export type BaseResponseDto<T = undefined> = {
-    isSuccess:true | false;
-    message: 'Succeeded' | 'Failed';
-    body?:T;
+
+export class BaseResponseDto {
+    isSucceed: boolean;
+    message: string;
+
+    constructor(isSucceed: boolean=true, message: string="Operation completed") {
+        this.isSucceed = isSucceed;
+        this.message = message;
+    }
 }
 
 
