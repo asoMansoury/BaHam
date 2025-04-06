@@ -1,3 +1,5 @@
+'use client';
+
 import { calculateAge } from "@/lib/utils";
 
  
@@ -13,6 +15,7 @@ import { Member } from "@prisma/client";
 import Link from "next/link";
 import React from "react";
 import { MembersDto } from "../types/(auth)/LoginsResponseDto";
+import LikeButton from "../components/LikeButton";
  
 
 
@@ -20,6 +23,7 @@ import { MembersDto } from "../types/(auth)/LoginsResponseDto";
 
 type Props = {
   member: MembersDto;
+  likeIds:string[];
 };
  
 
@@ -28,7 +32,16 @@ type Props = {
 
 export default function MemberCard({
   member,
+  likeIds
 }: Props) {
+  const hasLiked= likeIds.includes(
+    member.userId
+  );
+
+  const preventLinkAction = (e:React.MouseEvent)=>{
+    e.preventDefault();
+    e.stopPropagation();
+  }
   return (
     <Card
       fullWidth
@@ -43,7 +56,15 @@ export default function MemberCard({
         src={member.image || "/images/user.png"}
         className="aspect-square object-cover transition-transform duration-300 hover:scale-105"
       />
-
+      <div onClick={preventLinkAction}>
+        <div className="absolute top-3 right-3 z-50">
+          <LikeButton
+            targetId={member.userId}
+            hasLiked={hasLiked}
+          >
+          </LikeButton>
+        </div>
+      </div>
       <CardFooter className="flex justify-start bg-black overflow-hidden absolute bottom-0 z-10 bg-dark-gradient p-4 rounded-lg shadow-lg">
 
          <div className="flex flex-col text-white">

@@ -2,15 +2,18 @@ import { getMemberByUserId } from '@/app/actions/membersActions'
 import { notFound } from 'next/navigation';
 import React from 'react'
 
-type MemberDetailedPage = {
-    params:{userId}
+type MemberDetailedPageProps = {
+  params: { userId: string }
 }
-export default async function MemberDetailedPage({params}:MemberDetailedPage) {
-  const member = (await getMemberByUserId(params.userId) as any).data;
 
-  if(!member) return notFound();
+export default async function MemberDetailedPage({ params }: MemberDetailedPageProps) {
+  const member = (await getMemberByUserId(params.userId) as any)?.data;
 
-  return <>
-  {member.name} This is the member detail page
-  </>
+  if (!member) return notFound();
+
+  return (
+    <>
+      {member.name} This is the member detail page
+    </>
+  );
 }

@@ -52,9 +52,11 @@ model Member{
   city        String
   country     String
   image       String?
-  is_active         Boolean @default(true)
+  is_active   Boolean @default(true)
   user        User @relation(fields: [userId], references: [id],onDelete: Cascade)
   photos      Photo[]
+  sourceLikes Like[] @relation("SourceMember")
+  targetLikes Like[] @relation("TargetMember")
 }
 
 model Photo{
@@ -64,4 +66,18 @@ model Photo{
   is_active         Boolean @default(true)
   memberId    String
   member      Member @relation(fields: [memberId],references: [id],onDelete: Cascade)
+}
+
+
+model Like {
+  sourceUserId String
+  targetUserId String
+
+  sourceMember Member @relation(name: "SourceMember", fields: [sourceUserId], references: [userId],onDelete: Cascade)
+  targetMember Member @relation(name: "TargetMember", fields: [targetUserId], references: [userId],onDelete: Cascade)
+
+  @@id([sourceUserId, targetUserId])
+
+  created     DateTime @default(now())
+  updated     DateTime @default(now())
 }

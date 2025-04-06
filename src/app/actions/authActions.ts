@@ -6,7 +6,7 @@ import { ActionResult } from '../../types';
 import bcrypt from "bcryptjs";
 
 import { LoginSchema } from '../../lib/schemas/LoginSchemas';
-import { signIn ,signOut} from '@/auth';
+import { auth, signIn ,signOut} from '@/auth';
 import { User } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { BaseResponseDto } from '../types/BaseResponseDto';
@@ -82,4 +82,13 @@ export async function signOutUser() {
 
 export async function getUserByEmail(email: string) {
     return prisma.user.findUnique({ where: { email: email,is_active:true } });
+}
+
+export async function getAuthUserId(){
+    const session = await auth();
+    const userId= session?.user?.id;
+    
+    if(!userId) throw new Error("Unauthorised");
+
+    return userId;
 }
