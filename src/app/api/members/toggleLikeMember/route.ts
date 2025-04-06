@@ -18,5 +18,5 @@ export async function POST(request:Request){
     }
     var params = validated.data;
     const members = await toggleLikeMember(params.targetUserId,params.isLiked,params.userId);
-    return NextResponse.json({});
+    return NextResponse.json(members);
 }
