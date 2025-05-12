@@ -1,4 +1,6 @@
-import { prisma } from "@/lib/prisma";
+'use server';
+
+import { prisma } from '../../lib/prisma';
 import { ActionResult } from "@/types";
 import { LikesDto, LikesVm } from "../types/Likes/LikesDto";
 import { MembersDto } from "../types/(auth)/LoginsResponseDto";
@@ -45,7 +47,8 @@ export async function fetchCurrentUserLikeIds(userId:string): Promise<ActionResu
         } as LikesDto
     });
 
-    return { status: 'success', data:  {
+    return { status: 'success', 
+        data:  {
         likesDto:result
     } as LikesVm  
 }

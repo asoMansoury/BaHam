@@ -47,8 +47,7 @@ export async function getMembers(): Promise<ActionResult<GetMembersDto>>{
 }
 
 export async function getMemberByUserId(userId:string): Promise<ActionResult<MembersDto>>{
-    var member =await prisma.member.findUnique({where:{userId, is_active:true}});
-
+    var member =await prisma.member.findUnique({where:{userId:userId, is_active:true}});
     const result = {
         id:member.id,
         name:member.name,
