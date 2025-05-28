@@ -2,26 +2,24 @@ import { getMemberByUserId } from "@/app/actions/membersActions";
 import { ReactNode } from "react";
 import MemberSidebar from "../MemberSidebar";
 import { Card } from "@heroui/react";
+import { getAuthUserId } from "@/app/actions/authActions";
+import { notFound } from "next/navigation";
 
 type LayoutProps = {
     children:ReactNode;
-    params:{userId:string}
 };
 export default async function Layout({
     children,
-    params
 }:LayoutProps){
-    const member = (await getMemberByUserId(params.userId) as any).data;
+    const userId = (await getAuthUserId());
+    const member = (await getMemberByUserId(userId) as any).data;
+    if(!member) return notFound();
 
-    const basePath = "/members/user";
+    const basePath = "/members/edit";
     const navLinks = [
-        { name: "Profile", href: `${basePath}` },
-        {
-          name: "Photos",
-          href: `${basePath}/photos`,
-        },
-        { name: "Chat", href: `${basePath}/chat` },
-      ];
+        {name:"Edit Profile",href:`${basePath}`},
+        {name:"Update Photos",href:`${basePath}/photos`}
+    ]
 
     return (
         <div className="grid grid-cols-12 gap-5 h-[80vh]">

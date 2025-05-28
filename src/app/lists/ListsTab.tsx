@@ -1,12 +1,10 @@
 "use client";
 
-import { Member } from "@prisma/client";
 import { useSearchParams,useRouter, usePathname } from "next/navigation";
 import { MembersDto } from "../types/(auth)/LoginsResponseDto";
 import { Tab, Tabs } from "@heroui/react";
 import { Key, useTransition } from "react";
 import MemberCard from "../members/MemberCard";
-import { URLSearchParams } from "url";
 import LoadingComponent from "../components/LoadingComponent";
 
 

@@ -1,7 +1,5 @@
-"use client";
-
 import React from 'react'
-import { fetchCurrentUserLikeIds, fetchCurrentUserLikeIdsWith, fetchLikedMembers } from '../actions/likeActions'
+import { fetchCurrentUserLikeIds, fetchLikedMembers } from '../actions/likeActions'
 import { getAuthUserId } from '../actions/authActions';
 import ListsTab from './ListsTab';
 import { LikesVm } from '../types/Likes/LikesDto';
