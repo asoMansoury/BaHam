@@ -9,7 +9,7 @@ export async function POST(request:Request){
 
     const body = await request.json();
     const validated = likedMemberSchema.safeParse(body);
-
+    
     if (!validated.success) {
       return NextResponse.json(
         { error: 'Invalid request body' },

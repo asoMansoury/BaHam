@@ -4,7 +4,9 @@ import { memberEditSchema, MemberEditSchema } from "@/lib/schemas/MemberEditSche
 import { ActionResult } from "@/types";
 import { getAuthUserId } from "./authActions";
 import { prisma } from "@/lib/prisma";
-import { Member } from "@prisma/client";
+import { Member, User } from "@prisma/client";
+import { MemberVm } from "../types/Members/MemberVM";
+import { EditProfileRequestDto } from "../types/Api/Request/Member/EditProfile";
 
 export async function updateMemberProfile(data:MemberEditSchema,nameUpdated:boolean):Promise<ActionResult<Member>>{
 
@@ -33,4 +35,31 @@ export async function updateMemberProfile(data:MemberEditSchema,nameUpdated:bool
         }
     });
     return {status:'success',data:member}
+}
+
+export async function updateMemberProfileFunc(data:EditProfileRequestDto,user:User):Promise<ActionResult<MemberVm>>{
+        
+    const {name,description,city,country} = data;
+
+    if(user.name!=name){
+        await prisma.user.update({
+            where:{id:user.id},
+            data:{name}
+        })
+    }
+
+    const member = await prisma.member.update({
+        where: { userId:user.id },
+        data:{
+            name,
+            description,
+            city,
+            country
+        }
+    });
+
+    return { 
+        status: 'success', 
+        data:  {} as MemberVm  
+    };
 }
