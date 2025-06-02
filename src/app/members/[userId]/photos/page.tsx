@@ -13,7 +13,8 @@ export default async function PhotosPage({
   params: { userId: string };
 
 }) {
-  const photos = await getMemberPhotoNyUserId(params.userId);
+   const awaitedParams = await params;
+  const photos = await getMemberPhotoNyUserId(awaitedParams.userId);
   return (
     <>
       <CardHeader className='text-2xl font-semibold text-secondary-50'>

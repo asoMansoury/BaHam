@@ -11,9 +11,10 @@ export default async function Layout({
     children,
     params
 }:LayoutProps){
-    const member = (await getMemberByUserId(params.userId) as any).data;
+    const awaitedParams = await params;
+    const member = (await getMemberByUserId(awaitedParams.userId) as any).data;
 
-    const basePath = "/members/user";
+    const basePath = `/members/${awaitedParams.userId}`;
     const navLinks = [
         { name: "Profile", href: `${basePath}` },
         {
