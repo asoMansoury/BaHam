@@ -5,16 +5,16 @@ import { Card } from "@heroui/react";
 
 type LayoutProps = {
     children:ReactNode;
-    params:{userId:string}
+    params:{memberId:string}
 };
 export default async function Layout({
     children,
     params
 }:LayoutProps){
     const awaitedParams = await params;
-    const member = (await getMemberByUserId(awaitedParams.userId) as any).data;
+    const member = (await getMemberByUserId(awaitedParams.memberId) as any).data;
 
-    const basePath = `/members/${awaitedParams.userId}`;
+    const basePath = `/members/${awaitedParams.memberId}`;
     const navLinks = [
         { name: "Profile", href: `${basePath}` },
         {

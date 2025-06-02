@@ -42,7 +42,7 @@ export default function UserMenu({
           <DropdownItem
             key="btnEditProfile"
             as={Link}
-            href="/members/edit"
+            href="/user/edit"
           >
             Edit profile
           </DropdownItem>

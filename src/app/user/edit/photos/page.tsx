@@ -4,10 +4,10 @@ import { CardBody, CardHeader, Divider } from '@heroui/react'
 import React from 'react'
 
 export default async function PhotosPage() {
-  // const userId = await getAuthUserId();
-  // console.log({userId})
-  // const member = await getMemberByUserId(userId);
-  // const photos = await getMemberPhotoNyUserId(userId);
+  const userId = await getAuthUserId();
+  const member = await getMemberByUserId(userId);
+  const photos = await getMemberPhotoNyUserId(userId);
+  console.log(photos)
   return (
     <>
       <CardHeader className='flex flex-row justify-between items-center'>

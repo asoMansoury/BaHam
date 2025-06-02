@@ -1,6 +1,6 @@
 import { getMemberByUserId } from "@/app/actions/membersActions";
 import { ReactNode } from "react";
-import MemberSidebar from "../MemberSidebar";
+import MemberSidebar from "./MemberSidebar";
 import { Card } from "@heroui/react";
 import { getAuthUserId } from "@/app/actions/authActions";
 import { notFound } from "next/navigation";
@@ -15,7 +15,7 @@ export default async function Layout({
     const member = (await getMemberByUserId(userId) as any).data;
     if(!member) return notFound();
 
-    const basePath = "/members/edit";
+    const basePath = "/user/edit";
     const navLinks = [
         {name:"Edit Profile",href:`${basePath}`},
         {name:"Update Photos",href:`${basePath}/photos`}
