@@ -15,10 +15,10 @@ export default async function Layout({
     const member = (await getMemberByUserId(userId) as any).data;
     if(!member) return notFound();
 
-    const basePath = "/user/edit";
+    const basePath = "/user/";
     const navLinks = [
         {name:"Edit Profile",href:`${basePath}`},
-        {name:"Update Photos",href:`${basePath}/photos`}
+        {name:"Update Photos",href:`${basePath}/edit/photos`}
     ]
 
     return (
