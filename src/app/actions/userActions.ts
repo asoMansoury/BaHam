@@ -4,9 +4,10 @@ import { memberEditSchema, MemberEditSchema } from "@/lib/schemas/MemberEditSche
 import { ActionResult } from "@/types";
 import { getAuthUserId } from "./authActions";
 import { prisma } from "@/lib/prisma";
-import { Member, User } from "@prisma/client";
+import { Member, Photo, User } from "@prisma/client";
 import { MemberVm } from "../types/Members/MemberVM";
 import { EditProfileRequestDto } from "../types/Api/Request/Member/EditProfile";
+import { cloudinary } from "@/lib/cloudinary";
 
 export async function updateMemberProfile(data:MemberEditSchema,nameUpdated:boolean):Promise<ActionResult<Member>>{
 
@@ -62,4 +63,52 @@ export async function updateMemberProfileFunc(data:EditProfileRequestDto,user:Us
         status: 'success', 
         data:  {} as MemberVm  
     };
+}
+
+export async function addImage(url:string,publicId:string){
+    const userId = await getAuthUserId();
+
+    return prisma.member.update({
+        where: { userId },
+        data:{
+            photos:{
+                create:[
+                    {
+                        url,
+                        publicId
+                    }
+                ]
+            }
+        }
+    })
+}
+
+export async function setMainImage(photo:Photo){
+    const userId = await getAuthUserId();
+
+    await prisma.user.update({
+        where:{id:userId},
+        data:{image:photo.url}
+    });
+
+    return prisma.member.update({
+        where: { userId },
+        data:{image:photo.url}
+    });
+}
+
+export async function deleteImage(photo:Photo){
+    const userId = await getAuthUserId();
+
+    if(photo.publicId)
+        await cloudinary.v2.uploader.destroy(photo.publicId);
+
+    return prisma.member.update({
+        where:{userId},
+        data:{
+            photos:{
+                delete:{id:photo.id}
+            }
+        }
+    })
 }
