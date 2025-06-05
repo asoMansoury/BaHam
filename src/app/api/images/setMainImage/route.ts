@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getUserImages } from '@/app/actions/userActions';
+import { getUserImageById, getUserImages, setMainImage, setMainImageForApi } from '@/app/actions/userActions';
 import { apiAuth, apiTokenEmail } from '@/app/middleware/apiAuth';
 import { getUserByEmail } from '@/app/actions/authActions';
+import { Photo } from '@prisma/client';
 
 export async function GET(request: Request) {
     const authResponse = apiAuth(request);
@@ -13,11 +14,13 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const photoId = url.searchParams.get('photoId');
 
-    const result = await getUserImages(userData.id);
+    const photo = await getUserImageById(photoId);
+    const result = await setMainImageForApi(photo.data as Photo,userData.id);
 
-    if (result.status === 'error') {
-        return NextResponse.json({ message: result.error }, { status: 404 });
+
+    if (photo.status === 'error') {
+        return NextResponse.json({ message: photo.error }, { status: 404 });
     }
 
-    return NextResponse.json({ images: result.data });
+    return NextResponse.json({ images: photo.data });
 }

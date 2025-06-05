@@ -113,6 +113,18 @@ export async function setMainImage(photo:Photo){
     });
 }
 
+export async function setMainImageForApi(photo:Photo,userId:string){
+
+    await prisma.user.update({
+        where:{id:userId},
+        data:{image:photo.url}
+    });
+
+    return prisma.member.update({
+        where: { userId },
+        data:{image:photo.url}
+    });
+}
 
 
 export async function deleteImage(photo:Photo){
@@ -138,7 +150,8 @@ export async function getUserImages(userId: string) {
             photos: {
                 select: {
                     url: true,
-                    publicId: true
+                    publicId: true,
+                    id: true
                 }
             }
         }
@@ -151,17 +164,21 @@ export async function getUserImages(userId: string) {
     return { status: 'success', data: memberWithPhotos.photos };
 }
 
+export async function getUserImageById(photoId: string) {
+    const photo = await prisma.photo.findUnique({
+        where: { id: photoId },
+        select: {
+            id: true,
+            url: true,
+            publicId: true,
+            memberId: true
+        }
+    });
 
-// export async function getUserImageById(photoId: string) {
-//     const selectPhoto = await prisma.photo.findUnique({
-//         where: { id:photoId },
-//         select: {
-//         }
-//     });
+    if (!photo) {
+        return { status: 'error', error: 'Photo not found' };
+    }
 
-//     if (!selectPhoto) {
-//         return { status: 'error', error: 'User not found' };
-//     }
+    return { status: 'success', data: photo };
+}
 
-//     return { status: 'success', data: memberWithPhotos };
-// }
