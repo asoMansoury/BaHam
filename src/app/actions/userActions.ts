@@ -128,3 +128,23 @@ export async function deleteImage(photo:Photo){
         }
     })
 }
+
+export async function getUserImages(userId: string) {
+    const memberWithPhotos = await prisma.member.findUnique({
+        where: { userId },
+        select: {
+            photos: {
+                select: {
+                    url: true,
+                    publicId: true
+                }
+            }
+        }
+    });
+
+    if (!memberWithPhotos) {
+        return { status: 'error', error: 'User not found' };
+    }
+
+    return { status: 'success', data: memberWithPhotos.photos };
+}
