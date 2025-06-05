@@ -83,6 +83,22 @@ export async function addImage(url:string,publicId:string){
     })
 }
 
+export async function addImageApi(url:string,publicId:string,userId:string){
+    return prisma.member.update({
+        where: { userId },
+        data:{
+            photos:{
+                create:[
+                    {
+                        url,
+                        publicId
+                    }
+                ]
+            }
+        }
+    })
+}
+
 export async function setMainImage(photo:Photo){
     const userId = await getAuthUserId();
 

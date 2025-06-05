@@ -15,7 +15,11 @@ export function calculateAge(dob: Date) {
 
 }
 
-
+export function generateUniqueFilename(extension: string) {
+  const timestamp = Date.now();
+  const random = Math.floor(Math.random() * 10000);
+  return `${timestamp}_${random}.${extension}`;
+}
 
 
 
