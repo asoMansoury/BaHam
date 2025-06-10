@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import React from 'react';
 import EditForm from './EditForm';
 import { MembersDto } from '@/app/types/(auth)/LoginsResponseDto';
+import CardInnerWrapper from '../components/CardInnerWrapper';
 
 export default async function EditPage(){
 
@@ -14,14 +15,11 @@ export default async function EditPage(){
 
     if(!member) return notFound();
     return (
-        <>
-            <CardHeader className='text-2xl font-semibold text-default'>
-                Edit Profile
-            </CardHeader>
-            <Divider></Divider>
-            <CardBody>
+        <CardInnerWrapper 
+            header="Edit Profile" 
+            body={
                 <EditForm member={member.data as MembersDto}></EditForm>
-            </CardBody>
-        </>
+            }>
+        </CardInnerWrapper>
     )
 }

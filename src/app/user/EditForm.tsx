@@ -47,7 +47,6 @@ export default function EditForm({member}:props) {
   const onSumbit =async (data:MemberEditSchema) =>{
     const nameUpdated = data.name != member.name;
     const result = await updateMemberProfile(data,nameUpdated);
-    console.log({result});
     if(result.status = 'success'){
       toast.success("Profile updated successfully");
       router.refresh();

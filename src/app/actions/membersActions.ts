@@ -5,9 +5,7 @@ import {prisma} from '@/lib/prisma';
 import UserNotSignedInException from '../utils/exceptions/UserNotSignedInException';
 import { Photo } from '@prisma/client';
 import { ActionResult } from '@/types';
-import { BaseResponseDto } from '../types/BaseResponseDto';
 import { GetMembersDto, MembersDto } from '../types/(auth)/LoginsResponseDto';
-import { mapArray, mapArrayType, mapProperties } from '../types/Mapper';
 
 //this function populate all activated members 
 export async function getMembers(): Promise<ActionResult<GetMembersDto>>{
