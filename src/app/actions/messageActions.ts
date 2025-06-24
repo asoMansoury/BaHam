@@ -5,7 +5,7 @@ import { ActionResult } from "@/types";
 import { Message } from "@prisma/client";
 import { getAuthUserId } from "./authActions";
 import {prisma} from '@/lib/prisma';
-import { MessageVM } from "../types/Messages/MessageDto";
+import { mapMessageToMessageDto, MessageDto, MessageVM } from "../types/Messages/MessageDto";
 
 export async function createMessage(recipientUserId:string,data:MessageSchema):Promise<ActionResult<Message>>{
     const userId = await getAuthUserId();
@@ -45,9 +45,10 @@ export async function createMessageApi(senderId:string,recipientUserId:string,da
 }
 
 
-export async function getMessageThread(recipientId:string){
+export async function getMessageThread(recipientId:string):Promise<MessageDto[]>{
     const userId = await getAuthUserId();
 
+    var result:Message[] = [];
     const messages = await prisma.message.findMany({
         where:{
             OR: [
@@ -90,5 +91,5 @@ export async function getMessageThread(recipientId:string){
         }
     });
 
-    return messages;
+    return messages.map((message)=>mapMessageToMessageDto(message));
 }
