@@ -1,0 +1,4 @@
+import { BaseResponseDto } from "../BaseResponseDto";
+
+export type MessageVm = BaseResponseDto & {
+}

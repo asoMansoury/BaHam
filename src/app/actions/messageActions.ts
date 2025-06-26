@@ -173,7 +173,46 @@ export async function deleteMessage(messageId:string,isOutbox:boolean){
                 OR:messagesToDelete.map(m=>({id:m.id}))
             }
         })
-    }
+    }  
+}
 
-    
+export async function deleteMessageApi(userId:string,messageId:string,isOutbox:boolean):Promise<ActionResult<MessageVM>>{
+    const selector = isOutbox ? 'senderDeleted':'recipientDeleted';
+
+    await prisma.message.update({
+        where:{id:messageId},
+        data:{
+            [selector]:true
+        }
+    });
+
+    const messagesToDelete =await prisma.message.findMany({
+        where:{
+            OR:[
+                {
+                    senderId:userId,
+                    senderDeleted:true,
+                    recipientDeleted:true
+                },
+                {
+                    recipientId:userId,
+                    senderDeleted:true,
+                    recipientDeleted:true
+                }
+            ]
+        }
+    });
+
+    if(messagesToDelete.length > 0){
+        await prisma.message.deleteMany({
+            where:{
+                OR:messagesToDelete.map(m=>({id:m.id}))
+            }
+        })
+    }  
+
+        return { 
+            status: 'success', 
+            data:  {} as MessageVM  
+        }
 }
