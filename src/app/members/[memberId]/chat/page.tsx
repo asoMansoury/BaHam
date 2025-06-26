@@ -5,14 +5,14 @@ import { getMessageThread } from '@/app/actions/messageActions'
 import { getAuthUserId } from '@/app/actions/authActions'
 import MessageBox from './MessageBox'
 
-type ChatPageProps = {
-  userId:string
-}
 export default async function ChatPage({
-  userId
-}:ChatPageProps) {
+  params,
+}: {
+  params: { memberId: string }
+}) {
+  var awaitedParams = await params;
+  const userId = awaitedParams.memberId;
   const messages = await getMessageThread(userId);
-  
   const currentUserId = await getAuthUserId();
 
   const body = (
@@ -21,8 +21,10 @@ export default async function ChatPage({
         messages.length === 0? (
           "No messages to display"
         ):(
+
           <div>
             {messages.map((message)=>(
+
               <MessageBox
                 currentUserId={currentUserId}
                 message={message}
