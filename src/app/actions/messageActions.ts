@@ -6,6 +6,7 @@ import { Message } from "@prisma/client";
 import { getAuthUserId } from "./authActions";
 import {prisma} from '@/lib/prisma';
 import { mapMessageToMessageDto, MessageDto, MessageVM } from "../types/Messages/MessageDto";
+import { MessageVm } from "../types/Messages/MessageVm";
 
 export async function createMessage(recipientUserId:string,data:MessageSchema):Promise<ActionResult<Message>>{
     const userId = await getAuthUserId();
@@ -92,6 +93,64 @@ export async function getMessageThread(recipientId:string):Promise<MessageDto[]>
     });
 
     return messages.map((message)=>mapMessageToMessageDto(message));
+}
+
+export async function getMessageThreadApi(recipientId:string,userId:string):Promise<ActionResult<MessageVM>>{
+
+
+    const messages = await prisma.message.findMany({
+        where:{
+            OR: [
+                {
+                    senderId:userId, 
+                    recipientId:recipientId,
+                    senderDeleted:false
+                },
+                {
+                    senderId:recipientId,
+                    recipientId:userId,
+                    recipientDeleted:false
+                }
+            ]
+        },
+        orderBy:{
+            created:'asc'
+        },
+        select:{
+            id:true,
+            text:true,
+            created:true,
+            dateRead:true,
+            senderId:true,
+            recipientId:true,
+            sender:{
+                select:{
+                    userId:true,
+                    name:true,
+                    image:true
+                }
+            },
+            recipient:{
+                select:{
+                    userId:true,
+                    name:true,
+                    image:true
+                }
+            }
+        }
+    });
+
+    var messagesResult = messages.map((message)=>mapMessageToMessageDto(message));
+
+
+        var result ={
+            messages:messagesResult
+        } as MessageVm
+
+        return { 
+            status: 'success', 
+            data:  result as any
+        }
 }
 
 export async function getMessagesByContainer(container:string){
