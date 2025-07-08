@@ -31,7 +31,6 @@ export default function ChatForm() {
             params.memberId,
             data
         );
-
         if(result.status === "error")
         {
             handleFormServerErrors(result,setError)

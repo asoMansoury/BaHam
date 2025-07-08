@@ -7,8 +7,10 @@ import { getAuthUserId } from "./authActions";
 import {prisma} from '@/lib/prisma';
 import { mapMessageToMessageDto, MessageDto, MessageVM } from "../types/Messages/MessageDto";
 import { MessageVm } from "../types/Messages/MessageVm";
+import { pusherServer } from "@/lib/pusher";
+import { createChatId } from "@/lib/utils";
 
-export async function createMessage(recipientUserId:string,data:MessageSchema):Promise<ActionResult<Message>>{
+export async function createMessage(recipientUserId:string,data:MessageSchema):Promise<ActionResult<MessageDto>>{
     const userId = await getAuthUserId();
     const validated = messageSchema.safeParse(data);
 
@@ -20,10 +22,14 @@ export async function createMessage(recipientUserId:string,data:MessageSchema):P
             text,
             recipientId:recipientUserId,
             senderId:userId
-        }
+        },
+        select :messageSelect
     });
 
-    return {status:'success',data:message};
+    const messageDto = mapMessageToMessageDto(message);
+
+    await pusherServer.trigger(createChatId(userId,recipientUserId),'message:new',messageDto);
+    return {status:'success',data:messageDto};
 }
 
 export async function createMessageApi(senderId:string,recipientUserId:string,data:MessageSchema):Promise<ActionResult<MessageVM>>{
@@ -39,8 +45,21 @@ export async function createMessageApi(senderId:string,recipientUserId:string,da
             text,
             recipientId:recipientUserId,
             senderId:senderId
-        }
+        },
+        select :messageSelect
     });
+
+        const messageDto = mapMessageToMessageDto(message);
+        
+        await pusherServer.trigger(createChatId(senderId,recipientUserId),'message:new',messageDto);
+        var result = {
+            message:messageDto
+        } as MessageVm
+
+        return { 
+            status: 'success', 
+            data:  result as any
+        }
     return null;
     //return {status:'success',data:message};
 }
@@ -68,28 +87,7 @@ export async function getMessageThread(recipientId:string):Promise<MessageDto[]>
         orderBy:{
             created:'asc'
         },
-        select:{
-            id:true,
-            text:true,
-            created:true,
-            dateRead:true,
-            senderId:true,
-            recipientId:true,
-            sender:{
-                select:{
-                    userId:true,
-                    name:true,
-                    image:true
-                }
-            },
-            recipient:{
-                select:{
-                    userId:true,
-                    name:true,
-                    image:true
-                }
-            }
-        }
+        select:messageSelect
     });
 
     return messages.map((message)=>mapMessageToMessageDto(message));
@@ -116,28 +114,7 @@ export async function getMessageThreadApi(recipientId:string,userId:string):Prom
         orderBy:{
             created:'asc'
         },
-        select:{
-            id:true,
-            text:true,
-            created:true,
-            dateRead:true,
-            senderId:true,
-            recipientId:true,
-            sender:{
-                select:{
-                    userId:true,
-                    name:true,
-                    image:true
-                }
-            },
-            recipient:{
-                select:{
-                    userId:true,
-                    name:true,
-                    image:true
-                }
-            }
-        }
+        select:messageSelect
     });
 
     var messagesResult = messages.map((message)=>mapMessageToMessageDto(message));
@@ -171,26 +148,7 @@ export async function getMessagesByContainer(container:string){
         orderBy:{
             created:'desc'
         },
-        select:{
-            id:true,
-            text:true,
-            created:true,
-            dateRead:true,
-            sender:{
-                select:{
-                    userId:true,
-                    name:true,
-                    image:true
-                }
-            },
-            recipient:{
-                select:{
-                    userId:true,
-                    name:true,
-                    image:true
-                }
-            }
-        }
+        select:messageSelect
     });
 
     return messages.map(message=>mapMessageToMessageDto(message));
@@ -275,3 +233,27 @@ export async function deleteMessageApi(userId:string,messageId:string,isOutbox:b
             data:  {} as MessageVM  
         }
 }
+
+
+const messageSelect = {
+            id:true,
+            text:true,
+            created:true,
+            dateRead:true,
+            senderId:true,
+            recipientId:true,
+            sender:{
+                select:{
+                    userId:true,
+                    name:true,
+                    image:true
+                }
+            },
+            recipient:{
+                select:{
+                    userId:true,
+                    name:true,
+                    image:true
+                }
+            }
+        }

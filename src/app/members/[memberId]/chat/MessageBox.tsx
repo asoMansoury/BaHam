@@ -67,9 +67,9 @@ export default function MessageBox({
         <span className="text-sm font-semibold text-gray-900">
           {message.senderName}
         </span>
-        <span className="text-sm text-gray-500 ml-2">
-          {message.created.toDateString()}
-        </span>
+      <span className="text-sm text-gray-500 ml-2">
+        {message.created ? new Date(message.created).toDateString() : ""}
+      </span>
       </div>
     </div>
   );
