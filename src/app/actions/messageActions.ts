@@ -90,6 +90,25 @@ export async function getMessageThread(recipientId:string):Promise<MessageDto[]>
         select:messageSelect
     });
 
+    if(messages.length >0 ){
+        const unreadMessageIds = messages
+            .filter(m=>m.dateRead === null 
+                    && m.recipient?.userId === userId
+                    && m.sender?.userId === recipientId)
+            .map(m=>m.id);
+
+
+        await prisma.message.updateMany({
+            where:{
+                senderId:recipientId,
+                recipientId:userId,
+                dateRead:null
+            },
+            data:{dateRead:new Date()}
+        });
+        
+        await pusherServer.trigger(createChatId(userId,recipientId),'message:read',unreadMessageIds);
+    }
     return messages.map((message)=>mapMessageToMessageDto(message));
 }
 
@@ -116,6 +135,26 @@ export async function getMessageThreadApi(recipientId:string,userId:string):Prom
         },
         select:messageSelect
     });
+
+    
+    if(messages.length >0 ){
+        const unreadMessageIds = messages
+            .filter(m=>m.dateRead === null 
+                    && m.recipient?.userId === userId
+                    && m.sender?.userId === recipientId)
+            .map(m=>m.id);
+
+        await prisma.message.updateMany({
+            where:{
+                senderId:recipientId,
+                recipientId:userId,
+                dateRead:null
+            },
+            data:{dateRead:new Date()}
+        });
+
+        await pusherServer.trigger(createChatId(userId,recipientId),'message:read',unreadMessageIds);
+    }
 
     var messagesResult = messages.map((message)=>mapMessageToMessageDto(message));
 

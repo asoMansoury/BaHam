@@ -4,6 +4,7 @@ import { MessageDto } from "@/app/types/Messages/MessageDto"
 import { Avatar } from "@heroui/react";
 import { useEffect, useRef } from "react";
 import clsx from "clsx";
+import { timeAgo } from "@/app/utils/util";
 type MessageBoxProps = {
     message:MessageDto,
     currentUserId:string
@@ -58,7 +59,7 @@ export default function MessageBox({
       {message.dateRead &&
       message.recipientId !== currentUserId ? (
         <span className="text-xs text-black text-italic">
-          (Read x mins ago)
+          (Read {timeAgo(message.dateRead?.toString())}) 
         </span>
       ) : (
         <div></div>

@@ -1,4 +1,4 @@
-import { differenceInYears } from 'date-fns';
+import { differenceInYears, formatDistance } from 'date-fns';
 
 
 import { FieldValues, Path, UseFormSetError } from 'react-hook-form';
@@ -66,4 +66,8 @@ export function truncateString(text?: string | null, num = 50) {
         return text;
     }
     return text.slice(0, num) + '...';
+}
+
+export function timeAgo(date:string){
+    return formatDistance(new Date(date),new Date())+' ago';
 }
