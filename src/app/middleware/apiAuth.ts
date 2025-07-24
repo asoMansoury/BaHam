@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 export function apiAuth(req) {
     // Extract bearer token from the Authorization header
     const token = req.headers.get('Authorization')?.split(' ')[1];
-    
+    console.log({ token });
     // Validate the token
     if (token) {
         try {
