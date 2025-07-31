@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { calculateAge } from "@/lib/utils";
 
@@ -13,6 +13,7 @@ import Link from "next/link";
 import React from "react";
 import { MembersDto } from "../types/(auth)/LoginsResponseDto";
 import LikeButton from "../components/LikeButton";
+import PresenceDot from "../components/PresenceDot";
  
 
 
@@ -56,6 +57,9 @@ export default function MemberCard({
             hasLiked={hasLiked}
           >
           </LikeButton>
+          <div className="absolute top-2 left-3 z-50">
+            <PresenceDot member={member}></PresenceDot>
+          </div>
         </div>
       </div>
       <CardFooter className="flex justify-start bg-black overflow-hidden absolute bottom-0 z-10 bg-dark-gradient p-4 rounded-lg shadow-lg">

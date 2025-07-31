@@ -80,6 +80,31 @@ export async function fetchCurrentUserLikeIdsWith(): Promise<ActionResult<LikesV
 }
 }
 
+export async function fetchCurrentUserLikeIdsWithUI(){
+    const userId = await getAuthUserId();
+    
+    const likeIds = await prisma.like.findMany({
+        where:{
+            sourceUserId:userId,
+            
+        },
+        select:{
+            targetUserId:true
+        }
+    });
+
+    var result  =  likeIds.map(like=>{
+        return {
+           targetUserId: like.targetUserId,
+           sourceUserId:userId
+        } as LikesDto
+    });
+
+    return {
+        likesDto:result
+    } as LikesVm  
+}
+
 
 export async function fetchSourceLikes(userId:string):Promise<ActionResult<LikesVm>>{
     const sourceList = await prisma.like.findMany({

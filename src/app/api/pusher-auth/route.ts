@@ -11,7 +11,7 @@ export async function POST(request:Request){
             return new Response('Unauthorised', { status: 401 })
         }
         const body = await request.formData();
-
+        console.log("Pusher auth request body:", body);
         const socketId = body.get('socket_id') as string;
         const channelName = body.get('channel_name') as string;
         const data = {
