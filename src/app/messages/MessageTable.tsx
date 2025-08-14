@@ -2,14 +2,17 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 import { MessageDto } from "../types/Messages/MessageDto";
-import { Key, useCallback, useState } from "react";
+import { Key, useCallback, useEffect, useState } from "react";
 import { Avatar, Button, Card, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { AiFillDelete } from "react-icons/ai";
 import { truncateString } from "@/lib/utils";
 import { deleteMessage } from "../actions/messageActions";
+import PresenceAvatar from "../components/PresenceAvatar";
+import { pusherClient } from "@/lib/pusher";
 
 type MessageTableProps = {
     messages:MessageDto[];
+    userId: string;
 };
 
 const outboxColumns = [
@@ -27,13 +30,32 @@ const inboxColumns = [
 
 
 export default function MessageTable({
-  messages,
+  messages:messageData,
+  userId
 }: MessageTableProps) {
+  const [messages, setMessages] = useState<MessageDto[]>(messageData);
   const searchParams = useSearchParams();
   const router = useRouter();
   const isOutbox =
     searchParams.get("container") === "outbox";
 
+const handleReadMessages = useCallback(
+  (updatedMessage: MessageDto) => {
+    setMessages((prevState)=>[...prevState,updatedMessage])
+  },
+  []
+);
+    useEffect(() => {
+      console.log("Messages updated:", messages);
+    },[messages])
+    useEffect(() => {
+        const channel = pusherClient.subscribe('private-'+userId);
+        channel.bind("message:new", handleReadMessages);
+        return () => {
+            channel.unbind("message:new", handleReadMessages);
+            pusherClient.unsubscribe('private-'+userId);
+        };
+    },[userId]);
   // If isOutbox is true, the current user is the sender
   // If isOutbox is false, the current user is the recipient
 
@@ -82,8 +104,13 @@ export default function MessageTable({
         case "senderName":
           return (
             <div className="flex items-center gap-2 cursor-pointer">
-              <Avatar
-                alt="Image of member"
+              <PresenceAvatar
+                userId={
+                  (isOutbox
+                    ? item.recipientId
+                    : item.senderId) ||
+                  "/images/user.png"
+                }
                 src={
                   (isOutbox
                     ? item.recipientImage

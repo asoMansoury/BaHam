@@ -5,6 +5,7 @@ import { Avatar } from "@heroui/react";
 import { useEffect, useRef } from "react";
 import clsx from "clsx";
 import { timeAgo } from "@/app/utils/util";
+import PresenceAvatar from "@/app/components/PresenceAvatar";
 type MessageBoxProps = {
     message:MessageDto,
     currentUserId:string
@@ -28,12 +29,9 @@ export default function MessageBox({
   }, [messageEndRef]);
 
   const renderAvatar = () => (
-    <Avatar
-      name={message.senderName}
-      className="self-end"
-      src={
-        message.senderImage || "/images/user.png"
-      }
+    <PresenceAvatar
+    src={message.senderImage}
+    userId={message.senderId}
     />
   );
 

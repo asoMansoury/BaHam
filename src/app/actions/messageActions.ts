@@ -27,8 +27,8 @@ export async function createMessage(recipientUserId:string,data:MessageSchema):P
     });
 
     const messageDto = mapMessageToMessageDto(message);
-
     await pusherServer.trigger(createChatId(userId,recipientUserId),'message:new',messageDto);
+    await pusherServer.trigger("private-"+recipientUserId,'message:new',messageDto);
     return {status:'success',data:messageDto};
 }
 
@@ -52,6 +52,7 @@ export async function createMessageApi(senderId:string,recipientUserId:string,da
         const messageDto = mapMessageToMessageDto(message);
         
         await pusherServer.trigger(createChatId(senderId,recipientUserId),'message:new',messageDto);
+        await pusherServer.trigger("private-"+recipientUserId,'message:new',messageDto);
         var result = {
             message:messageDto
         } as MessageVm

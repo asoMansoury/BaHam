@@ -1,10 +1,11 @@
-
 "use client";
 
 import { calculateAge } from "@/lib/utils";
 import { Button, Card, CardBody, CardFooter, Divider, Image, Link } from "@heroui/react";
 import { Member } from "@prisma/client"
 import { usePathname } from "next/navigation";
+import PresenceDot from "../components/PresenceDot";
+import { MembersDto } from "../types/(auth)/LoginsResponseDto";
 
 type MemberSidebarProps = {
     member:Member;
@@ -21,7 +22,14 @@ export default function MemberSidebar({
     const pathname = usePathname();
     const basePath = `/members/${member.userId}`;
 
-     
+    const memberDto = {
+        userId: member.userId,
+        name: member.name,
+        image: member.image,
+        dateOfBirth: member.dateOfBirth,
+        city: member.city,
+        country: member.country
+    } as MembersDto
     return (
         <Card className="w-full mt-10 items-center h-[80vh]">
             <Image
@@ -36,6 +44,9 @@ export default function MemberSidebar({
                     <div className="text-2xl">
                         {member.name},{" "}
                         {calculateAge(member.dateOfBirth)}
+                    </div>
+                    <div>
+                        <PresenceDot member={memberDto}></PresenceDot>
                     </div>
                     <div className="text-sm text-neutral-500">
                         {member.city},{member.country}

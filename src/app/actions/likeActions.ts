@@ -5,6 +5,7 @@ import { ActionResult } from "@/types";
 import { LikesDto, LikesVm } from "../types/Likes/LikesDto";
 import { MembersDto } from "../types/(auth)/LoginsResponseDto";
 import { getAuthUserId } from "./authActions";
+import { pusherServer } from '@/lib/pusher';
 
 export async function toggleLikeMember(targetUserId:string,isLiked:boolean,userId:string): Promise<ActionResult<LikesVm>>{
 
@@ -18,11 +19,27 @@ export async function toggleLikeMember(targetUserId:string,isLiked:boolean,userI
             }
         })
     } else {
-       var result =  await prisma.like.create({
+       var like =  await prisma.like.create({
             data:{
                 sourceUserId:userId,
                 targetUserId
+            },
+            select:{
+                sourceMember:{
+                    select:{
+                        id:true,
+                        name:true,
+                        userId:true,
+                        image:true
+                    }
+                }
             }
+        });
+        
+        await pusherServer.trigger(`private-${targetUserId}`, 'like:new', {
+            image: like.sourceMember.image,
+            name: like.sourceMember.name,
+            userId:like.sourceMember.userId
         });
     }
 

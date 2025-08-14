@@ -12,21 +12,22 @@ type PresenceDotProps = {
 export default function PresenceDot({
     member
 }:PresenceDotProps){
-    const [isOnline,setIsOnline] = useState(false);
-    const { membersId } = usePresenceStore(
-    (state) => ({
-      membersId: state.membersId,
-    })
-  );
 
-    useEffect(() => {
-        const isOnline = membersId.indexOf(member.id)!==-1;
-        setIsOnline(isOnline);
-        },[membersId])
-
+//     const { membersId } = usePresenceStore(
+//     (state) => ({
+//       membersId: state.membersId,
+//     })
+//   );
+    const membersId = usePresenceStore(state => state.membersId);
+    const isOnline = membersId.indexOf(member.userId)!==-1;
+    // if(member.userId === "cm83upvn60009w6ag4zta0lwg"){
+    // console.log("member", member);  
+    // console.log("membersId", membersId);
+    // console.log("isOnline", isOnline);
+    // }
     if(!isOnline) 
         return null;
-    
+
 
     return (
         <>
