@@ -1,11 +1,11 @@
-
-  import { Button, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import { Button, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import Link from "next/link";
-  import React from "react";
-  import { GiSelfLove } from "react-icons/gi";
+import React from "react";
+import { GiSelfLove } from "react-icons/gi";
 import NavLink from "./NavLink";
 import { auth } from "@/auth";
 import UserMenu from "./UserMenu";
+import FiltersWrapper from "../FilterWrapper";
   
   export default async function TopNav() {
     const session =await auth();
@@ -73,7 +73,7 @@ import UserMenu from "./UserMenu";
 
           </NavbarContent>
         </Navbar>
-
+        <FiltersWrapper></FiltersWrapper>
       </>
     );
   }

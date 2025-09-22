@@ -6,6 +6,13 @@ export async function GET(request: Request) {
     const authResponse = apiAuth(request); // Use the new middleware for token validation
     if (authResponse) return authResponse; // Return the response if token is invalid
 
-    const members = await getMembers();
+    const members = await getMembers({
+                    ageRange:'18,100',
+                    gender :'male,female',
+                    orderBy:'updated',
+                    pageNumber:'1',
+                    pageSize : '12',
+                    withPhoto : 'true'
+                });
     return NextResponse.json(members);
 }
