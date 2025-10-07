@@ -14,7 +14,7 @@ export default function Providers({
     children,
     userId
 }:ProvidersType){
-    usePresenceChannel();
+    usePresenceChannel(userId);
     useNotificationChannel(userId);
     return <HeroUIProvider>
         <ToastContainer

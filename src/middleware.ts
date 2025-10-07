@@ -10,7 +10,6 @@ export default auth((req) => {
     const isPublic = publicRoutes.includes(nextUrl.pathname);    
 
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-
     if (isPublic) {
         return NextResponse.next();
     }

@@ -12,6 +12,7 @@ async function seedMembers(){
             name:member.name,
             passwordHash:await hash('password',10),
             image:member.image,
+            profileComplete:true,
             member:{
                 create:{
                     dateOfBirth:new Date(member.dateOfBirth),
@@ -23,6 +24,7 @@ async function seedMembers(){
                     city:member.city,
                     country:member.country,
                     image:member.image,
+
                     photos:{
                         create:{
                             url:member.image

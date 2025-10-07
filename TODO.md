@@ -1,0 +1,2 @@
+- [x] Edit src/app/(auth)/register/RegisterForm.tsx to uncomment and adjust the onSubmit function
+- [x] Change onNext function to pass data to onSubmit on the final step
