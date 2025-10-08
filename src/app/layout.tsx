@@ -17,11 +17,13 @@ export default async function RootLayout({
 }>) {
   const session = await auth();
   const userId = session?.user?.id || null;
+  const profileComplete = session?.user?.profileComplete || false;
+
   return (
     <html lang="en">
       <body>
         <TopNav></TopNav>
-        <Providers userId={userId}>{children}</Providers> 
+        <Providers profileComplete={profileComplete} userId={userId}>{children}</Providers> 
       </body>
     </html>
   );

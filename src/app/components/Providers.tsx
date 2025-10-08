@@ -8,14 +8,16 @@ import { useNotificationChannel } from "../hooks/useNotificationChannel";
 
 export type ProvidersType ={
     children:ReactNode,
-    userId: string | null
+    userId: string | null,
+    profileComplete: boolean
 }
 export default function Providers({
     children,
-    userId
+    userId,
+    profileComplete
 }:ProvidersType){
-    usePresenceChannel(userId);
-    useNotificationChannel(userId);
+    usePresenceChannel(userId,profileComplete);
+    useNotificationChannel(userId,profileComplete);
     return <HeroUIProvider>
         <ToastContainer
             position="bottom-right"

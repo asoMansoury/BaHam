@@ -1,7 +1,7 @@
 'use server';
 
 import { prisma } from '../../lib/prisma';
-import { combinedRegisterSchema, registerSchema, RegisterSchema } from '../../lib/schemas/RegisterSchema';
+import { combinedRegisterSchema, ProfileSchema, registerSchema, RegisterSchema } from '../../lib/schemas/RegisterSchema';
 import { ActionResult } from '../../types';
 import bcrypt from "bcryptjs";
 
@@ -201,3 +201,34 @@ export async function resetPassword(newPassword:string,token:string | null):Prom
     return {status:'success', data:'Password has been reset successfully'};
 }
 
+
+export async function completeSocialLoginProfile(data:ProfileSchema):Promise<ActionResult<string>>{
+    const session = await auth();
+    if(!session?.user) return {status:'error', error:'User not found'};
+
+    const user = await prisma.user.update({
+        where:{id:session.user.id},
+        data:{
+            profileComplete:true,
+            member:{
+                create:{
+                    name:session.user.name as string,
+                    image:session.user.image,
+                    gender:data.gender,
+                    description:data.description,
+                    city:data.city,
+                    country:data.country,
+                    dateOfBirth:new Date(data.dateOfBirth)
+                }
+            }
+        },
+        select:{
+            accounts:{
+                select:{
+                    provider:true
+                }
+            }
+        }
+    });
+    return {status:'success', data:user.accounts[0].provider}
+}
