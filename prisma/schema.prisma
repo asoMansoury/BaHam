@@ -28,16 +28,17 @@ model Account {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  passwordHash  String?
-  image         String?
+  id                String    @id @default(cuid())
+  name              String?
+  email             String?   @unique
+  emailVerified     DateTime?
+  passwordHash      String?
+  image             String?
   is_active         Boolean @default(true)
   profileComplete   Boolean @default(false)
-  accounts      Account[]
-  member        Member?
+  accounts          Account[]
+  member            Member?
+  role              Role     @default(Member)
 }
 
 
@@ -69,6 +70,7 @@ model Photo{
   is_active         Boolean @default(true)
   memberId    String
   member      Member @relation(fields: [memberId],references: [id],onDelete: Cascade)
+  isApproved Boolean @default(false)
 }
 
 
@@ -112,4 +114,9 @@ model Token{
 enum TokenType{
   VERIFY_EMAIL
   RESET_PASSWORD
+}
+
+enum Role {
+  Member
+  ADMIN
 }

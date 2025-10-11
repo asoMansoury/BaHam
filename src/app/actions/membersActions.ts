@@ -7,6 +7,7 @@ import { Photo } from '@prisma/client';
 import { ActionResult, GetMemberParams, PaginatedResponse } from '@/types';
 import { GetMembersDto, MembersDto } from '../types/(auth)/LoginsResponseDto';
 import { addYears } from 'date-fns';
+import { getAuthUserId } from './authActions';
 
 function getAgeRange(ageRange:string):Date[]{
     const [minAge,maxAge]= ageRange.split(',');
@@ -142,9 +143,11 @@ export async function getMemberByUserId(userId:string): Promise<ActionResult<Mem
 
 
 export async function getMemberPhotoNyUserId(userId:string){
+    const currentUserId = await getAuthUserId();
+
     const member =await prisma.member.findUnique({
         where:{userId,is_active:true},
-        select:{photos:true}
+        select:{photos:{where:currentUserId===userId?{}:{isApproved:true}}}
     });
 
     if(member) null ;

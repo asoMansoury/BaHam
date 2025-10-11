@@ -9,6 +9,16 @@ import FiltersWrapper from "../FilterWrapper";
   
   export default async function TopNav() {
     const session =await auth();
+    const memberLinks = [
+      { href: "members", label: "Mathes" },
+      { href: "lists", label: "Lists" },
+      { href: "messages", label: "Messages" }
+    ]
+
+    const adminLinks = [
+      { href: "/admin/moderation", label: "Photo Moderation" }
+    ]
+    const links = session?.user?.role === "ADMIN"?adminLinks:memberLinks;
     return (
       <>
         <Navbar
@@ -35,18 +45,15 @@ import FiltersWrapper from "../FilterWrapper";
             </div>
           </NavbarBrand>
           <NavbarContent justify="center">
-            <NavLink
-                href="members"
-                label="Mathes"
-            ></NavLink>
-            <NavLink
-                href="lists"
-                label="Lists"
-            ></NavLink>
-                        <NavLink
-                href="messages"
-                label="Messages"
-            ></NavLink>
+            {
+              links.map((item)=>(
+                <NavLink
+                  key={item.href}
+                  href={item.href}
+                  label={item.label}
+                ></NavLink>
+              ))
+            }
           </NavbarContent>
           <NavbarContent
             justify="end"

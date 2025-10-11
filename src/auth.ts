@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import authConfig from "./auth.config";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
 
 var prisma = new PrismaClient();
 
@@ -9,11 +9,9 @@ var prisma = new PrismaClient();
 export const { auth, handlers, signIn, signOut } = NextAuth({
     callbacks:{
         async jwt({user,token}) {
-             console.log("user:",user);
             if(user){
-                console.log("user:",user);
                 token.profileComplete = user.name ? true : false;;
-
+                token.role = user.role;
             }
 
                   // On subsequent calls, `user` is undefined — fetch from DB using token.sub
@@ -37,6 +35,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             if(token.sub && session.user){
                 session.user.id = token.sub//fetch user data from database
                 session.user.profileComplete = token.profileComplete as boolean;
+                session.user.role = token.role as Role;
             }
             return session;
         }

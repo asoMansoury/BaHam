@@ -1,9 +1,12 @@
 import { Photo } from "@prisma/client";
-import { useRouter } from "next/router";
+
 import { useState } from "react";
 import MemberImage from "./MemberImage";
 import StarButton from "./StarButton";
 import DeleteButton from "./DeleteButton";
+import { useRouter } from "next/navigation";
+import { deleteImage, setMainImage } from "../actions/userActions";
+import { toast } from "react-toastify";
 
 type MemberPhotosProps = {
     photos: Photo[] | null;
@@ -24,11 +27,27 @@ export default function MemberPhotos({
     })
 
     const onSetMain = async(photo:Photo)=>{
-        console.log("On set main is clicked");
+        if(photo.url === mainImageUrl) return;
+        setLoading({type:"main",isLoading:true,id:photo.id});
+        try{
+            await setMainImage(photo);
+            router.refresh();
+        }catch(err){
+            toast.error(err.message || "Something went wrong");
+        }finally{
+            setLoading({type:"",isLoading:false,id:""});
+        }
     }
 
     const onDelete = async (photo:Photo)=>{
-        console.log("onDelete is clicked");
+        if(photo.url === mainImageUrl) {
+            toast.error("Cannot delete main photo");
+            return;
+        }
+        setLoading({type:"delete",isLoading:true,id:photo.id});
+        await deleteImage(photo);
+        router.refresh();
+        setLoading({type:"",isLoading:false,id:""});
     }
     return (
         <div className="grid grid-col-5 gap-3 p-5">

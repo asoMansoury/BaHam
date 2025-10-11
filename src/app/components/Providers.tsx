@@ -5,6 +5,7 @@ import { ReactNode, useEffect } from "react"
 import { ToastContainer } from "react-toastify"
 import { usePresenceChannel } from "../hooks/usePresenceChannel"
 import { useNotificationChannel } from "../hooks/useNotificationChannel";
+import { SessionProvider } from "next-auth/react";
 
 export type ProvidersType ={
     children:ReactNode,
@@ -18,11 +19,13 @@ export default function Providers({
 }:ProvidersType){
     usePresenceChannel(userId,profileComplete);
     useNotificationChannel(userId,profileComplete);
-    return <HeroUIProvider>
-        <ToastContainer
-            position="bottom-right"
-            hideProgressBar
-        ></ToastContainer>
-        {children}
-        </HeroUIProvider>
+    return <SessionProvider>
+            <HeroUIProvider>
+                <ToastContainer
+                    position="bottom-right"
+                    hideProgressBar
+                ></ToastContainer>
+                {children}
+            </HeroUIProvider>
+        </SessionProvider>
 }
